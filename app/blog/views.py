@@ -31,7 +31,11 @@ class PostDetail(generics.RetrieveAPIView):
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def rate_view(request, pk):
-    rate_value = float(request.GET.get('rate'))
+    try:
+        rate_value = float(request.GET.get('rate'))
+    except ValueError:
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+        
     if not 0 <= rate_value <= 5:
         return Response(status=status.HTTP_400_BAD_REQUEST)
     post = Post.objects.get(pk=pk)
